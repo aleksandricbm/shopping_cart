@@ -3,10 +3,6 @@ require_dependency "shopping_cart/application_controller"
 module ShoppingCart
   class CartsController < ApplicationController
 
-    def index
-      binding.pry
-    end
-
     def show
       @order_items = current_order.order_items.order(id: :desc)
     end

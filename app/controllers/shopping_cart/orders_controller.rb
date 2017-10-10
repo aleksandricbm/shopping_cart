@@ -11,9 +11,7 @@ module ShoppingCart
       if params[:filter].present?
         @orders = filter.decorate
       else
-        # binding.pry
-        # @orders = current_user.orders #.decorate
-        @orders = Order.all
+        @orders = current_user.orders.decorate
       end
     end
 

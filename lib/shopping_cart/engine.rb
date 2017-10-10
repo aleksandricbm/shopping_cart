@@ -1,12 +1,12 @@
 module ShoppingCart
   class Engine < ::Rails::Engine
     isolate_namespace ShoppingCart
-    # initializer :append_migrations do |app|
-    #   unless app.root.to_s.match(root.to_s)
-    #     config.paths["db/migrate"].expanded.each do |expand_path|
-    #       app.config.paths['db/migrate'] << expand_path
-    #     end
-    #   end
-    # end
+    require 'draper'
+
+    initializer 'include module' do
+      ActiveSupport.on_load :action_controller do
+        include ShoppingCart::Current_order
+      end
+    end
   end
 end
