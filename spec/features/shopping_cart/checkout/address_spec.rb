@@ -6,9 +6,9 @@ module ShoppingCart
 
     before(:each) do
       login_as(user, scope: :user, run_callbacks: false)
-      visit shopping_cart.checkout_step_path(:address)
       FactoryGirl.create(:shipping_method)
       FactoryGirl.create(:country)
+      visit shopping_cart.checkout_step_path(:address)
     end
 
     describe 'login user and clicks the Checkout button' do
@@ -16,7 +16,7 @@ module ShoppingCart
         expect(page.html).to have_content 'test@example.com'
       end
 
-      it 'his order (not empty cart) valid address' do
+      it 'his order (not empty cart) valid address', js: true do
         expect(page.html).to have_content 'Checkout'
         fill_in 'setting_address[billing_address][first_name]', with: 'firstname'
         fill_in 'setting_address[billing_address][last_name]', with: 'lastname'
@@ -30,7 +30,11 @@ module ShoppingCart
         fill_in 'setting_address[shipping_address][city]', with: 'city'
         fill_in 'setting_address[shipping_address][zip]', with: '6666'
         fill_in 'setting_address[shipping_address][phone]', with: '887765554'
+
+        find('#setting_address_billing_address_country_id').find(:xpath, 'option[1]').select_option
+        find('#setting_address_shipping_address_country_id').find(:xpath, 'option[1]').select_option
         click_button I18n.t('button.save_continue')
+        # binding.pry
         expect(current_url).to have_content shopping_cart.checkout_step_path(:delivery)
       end
 

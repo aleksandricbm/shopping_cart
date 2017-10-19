@@ -12,6 +12,7 @@ module ShoppingCart
     end
 
     def save(params, use_billing = nil)
+      # binding.pry
       @billing.order_id = @current_order && @shipping.order_id = @current_order if @current_order.present?
       return false unless @billing.update(params_address(params, :billing_address))
       if use_billing == 'on'

@@ -1104,3 +1104,40 @@ Migrating to DeviseCreateUsers (20171018080539)
             FROM sqlite_temp_master
             WHERE name='index_users_on_email' AND type='index'
 [0m
+Started GET "/" for 127.0.0.1 at 2017-10-19 15:37:31 +0300
+  [1m[35m (0.9ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Processing by ProductsController#index as HTML
+  Rendering products/index.haml within layouts/application
+  Rendered products/index.haml within layouts/application (5.7ms)
+Completed 200 OK in 702ms (Views: 661.3ms | ActiveRecord: 1.7ms)
+
+
+Started GET "/checkout_steps/address" for 127.0.0.1 at 2017-10-19 15:38:29 +0300
+  [1m[35m (0.3ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Processing by ShoppingCart::CheckoutStepsController#show as HTML
+  Parameters: {"id"=>"address"}
+Redirected to http://localhost:3000/cart
+Completed 302 Found in 74ms (ActiveRecord: 1.9ms)
+
+
+Started GET "/cart" for 127.0.0.1 at 2017-10-19 15:38:29 +0300
+Processing by ShoppingCart::CartsController#show as HTML
+  Rendering /home/sasha/RUBY/shopping_cart/app/views/shopping_cart/carts/show.haml within layouts/application
+  Rendered /home/sasha/RUBY/shopping_cart/app/views/shopping_cart/carts/show.haml within layouts/application (29.9ms)
+Completed 200 OK in 371ms (Views: 356.9ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/" for 127.0.0.1 at 2017-10-19 15:38:49 +0300
+Processing by ProductsController#index as HTML
+  Rendering products/index.haml within layouts/application
+  Rendered products/index.haml within layouts/application (2.8ms)
+Completed 200 OK in 49ms (Views: 47.2ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/" for 127.0.0.1 at 2017-10-19 15:38:49 +0300
+Processing by ProductsController#index as HTML
+  Rendering products/index.haml within layouts/application
+  Rendered products/index.haml within layouts/application (2.9ms)
+Completed 200 OK in 83ms (Views: 81.4ms | ActiveRecord: 0.0ms)
+
+
