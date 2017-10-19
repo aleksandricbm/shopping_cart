@@ -13,8 +13,10 @@ dependencies:
 database:
   override:
     # replace CircleCI's generated database.yml
-    - bundle exec rails app:db:create --trace
-    - bundle exec rails app:db:schema:load --trace
+    - RAILS_ENV=test bundle exec rake db:migrate --trace
+    - bundle exec rails db:create --trace
+    - bundle exec rails db:migrate --trace
+    - bundle exec rails db:migrate RAILS_ENV=test --trace
 
 ## Customize test commands
 test:
