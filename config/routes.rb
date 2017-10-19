@@ -8,7 +8,4 @@ ShoppingCart::Engine.routes.draw do
   resources :checkout_steps, only: %i[show update]
   match 'settings/address', to: 'settings#index', via: 'get'
   match 'settings/address', to: 'settings#create', via: 'post'
-
-  match 'settings/privacy', to: 'users#index', via: 'get'
-  match 'settings/privacy', to: 'users#update', via: 'patch'
 end

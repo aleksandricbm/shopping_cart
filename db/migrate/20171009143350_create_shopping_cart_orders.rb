@@ -7,7 +7,8 @@ class CreateShoppingCartOrders < ActiveRecord::Migration[5.1]
       t.references :shipping_method, foreign_key: { to_table: :shopping_cart_shipping_methods }
       t.references :coupon, foreign_key: { to_table: :shopping_cart_coupons }
       t.references :order_status, foreign_key: { to_table: :shopping_cart_order_statuses }
-      t.references :user, foreign_key: { to_table: ShoppingCart.user_class.to_s.downcase.pluralize.to_sym }
+      # t.references :user, foreign_key: { to_table: ShoppingCart.user_class.to_s.downcase.pluralize.to_sym }
+      t.integer :user_id, foreign_key: true
     end
   end
 end

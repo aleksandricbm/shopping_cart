@@ -1,0 +1,60 @@
+en:
+  button:
+    save_continue: 'Save and Continue'
+    back_store: Back to Store
+  checkout:
+    delivery:
+      method: 'Method'
+      day: 'Days'
+      price: 'Price'
+    payment:
+      title: 'Credit Card'
+      number: 'Card Number'
+      cardname: 'Name on Card'
+      expired: 'MM / YY'
+      cvv: 'CVV'
+      errors:
+        number_card: Please enter a valid credit card number
+        name: Please enter a valid Name
+        expired: Please enter a valid Expired
+        cvv: Please enter a valid CVV Code
+    confirm:
+      ship_address: 'Shipping Address'
+      bil_address: 'Billing Address'
+      ship: 'Shipmetns'
+      pay: 'Payment Information'
+      title_book: 'Book'
+      title_price: 'Price'
+      title_quantity: 'Quantity'
+      title_total: 'Total'
+    complete:
+      thanks: 'Thank You for your Order!'
+      t_send: 'An order confirmation has been has been sent to '
+      order: 'Order'
+    ship_method: 'Shipping Method'
+    login:
+      login_wth_pass: 'Log In with Password'
+      quick_login: 'Quick Register'
+      quick_descr: 'You`ll be able to create password later'
+      butt_login_wth_pass: 'Log in with Password'
+      butt_con_check: 'Continue to Checkout'
+  cart:
+    order_summary: 'Order Summary'
+    subtotal: 'Subtotal:'
+    coupon: 'Coupon:'
+    total: 'Order Total:'
+    ship: 'Shipping'
+    empty: Empty Cart
+  settings:
+    title: 'Settings'
+    address: 'Address'
+    privacy: 'Privacy'
+    b_address: 'Billing Address'
+    s_address: 'Shipping Address'
+    use_billing: Use Billing Adress
+    my_orders:
+      title: 'My Orders'
+      table_number: 'Number'
+      table_completed: 'Completed at'
+      table_status: 'Status'
+      table_total: 'Total'

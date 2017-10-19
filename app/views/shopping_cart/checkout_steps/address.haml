@@ -15,11 +15,11 @@
         .visible-xs.visible-sm
           %h3.general-subtitle= t("settings.b_address")
           %p.general-info-text= t("form.all_fld_require")
-        = render template: 'forms/address.haml', locals: {f: f, address: @address.billing}
+        = render template: 'shopping_cart/forms/address.haml', locals: {f: f, address: @address.billing}
       .col-md-5.col-md-offset-1.mb-60
         .visible-xs.visible-sm
           %h3.general-subtitle= t("settings.s_address")
-        = render template: 'forms/address.haml', locals: {f: f, address: @address.shipping}
+        = render template: 'shopping_cart/forms/address.haml', locals: {f: f, address: @address.shipping}
         .form-group.checkbox
           %label.checkbox-label
             -#= f.check_box 'use_billing', class: 'checkbox-input',

@@ -1,6 +1,7 @@
 module ShoppingCart
   class Order < ApplicationRecord
     has_many :order_items
+    has_many :products, class_name: ShoppingCart.product_class.to_s, through: :order_items
     belongs_to :coupon, optional: true
     belongs_to :shipping_method, optional: true
     belongs_to :order_status, optional: true
@@ -12,7 +13,6 @@ module ShoppingCart
     scope :processing, -> { joins(:order_status).where(order_statuses: { name: 'Waiting for processing' }) }
     scope :delivered, -> { joins(:order_status).where(order_statuses: { name: 'Delivered' }) }
     scope :canceled, -> { joins(:order_status).where(order_statuses: { name: 'Canceled' }) }
-
 
     def total_price
       self.order_items.inject(0) { |sum, item| sum + item.item_total_price }
@@ -35,6 +35,5 @@ module ShoppingCart
     def total_quantity
       self.order_items.sum(:quantity)
     end
-
   end
 end

@@ -1,9 +1,7 @@
-require_dependency "shopping_cart/application_controller"
+require_dependency 'shopping_cart/application_controller'
 
 module ShoppingCart
   class OrdersController < ApplicationController
-    # load_and_authorize_resource
-
     def show
       @order_statuses = OrderStatus.all
       show_order_details if params[:number].present?

@@ -1,0 +1,2063 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='UTF-8' />
+    <title>RuboCop Inspection Report</title>
+    
+    <style>
+    * {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    }
+
+    body, html {
+    font-size: 62.5%;
+    }
+    body {
+    background-color: #ecedf0;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    margin: 0;
+    }
+    code {
+    font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-size: 85%;
+    }
+    #header {
+    background: #f9f9f9;
+    color: #333;
+    border-bottom: 3px solid #ccc;
+    height: 50px;
+    padding: 0;
+    }
+    #header .logo {
+    float: left;
+    margin: 5px 12px 7px 20px;
+    width: 38px;
+    height: 38px;
+    }
+    #header .title {
+    display: inline-block;
+    float: left;
+    height: 50px;
+    font-size: 2.4rem;
+    letter-spacing: normal;
+    line-height: 50px;
+    margin: 0;
+    }
+
+    .information, #offenses {
+    width: 100%;
+    padding: 20px;
+    color: #333;
+    }
+    #offenses {
+    padding: 0 20px;
+    }
+
+    .information .infobox {
+    border-left: 3px solid;
+    border-radius: 4px;
+    background-color: #fff;
+    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    padding: 15px;
+    border-color: #0088cc;
+    font-size: 1.4rem;
+    }
+    .information .infobox .info-title {
+    font-size: 1.8rem;
+    line-height: 2.2rem;
+    margin: 0 0 0.5em;
+    }
+    .information .offenses-list li {
+    line-height: 1.8rem
+    }
+    .information .offenses-list {
+    padding-left: 20px;
+    margin-bottom: 0;
+    }
+
+    #offenses .offense-box {
+    border-radius: 4px;
+    margin-bottom: 20px;
+    background-color: #fff;
+    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    }
+    .fixed .box-title {
+    position: fixed;
+    top: 0;
+    z-index: 10;
+    width: 100%;
+    }
+    .box-title-placeholder {
+    display: none;
+    }
+    .fixed .box-title-placeholder {
+    display: block;
+    }
+    #offenses .offense-box .box-title h3, #offenses .offense-box .box-title-placeholder h3 {
+    color: #33353f;
+    background-color: #f6f6f6;
+    font-size: 2rem;
+    line-height: 2rem;
+    display: block;
+    padding: 15px;
+    border-radius: 5px;
+    margin: 0;
+    }
+    #offenses .offense-box .offense-reports  {
+    padding: 0 15px;
+    }
+    #offenses .offense-box .offense-reports .report {
+    border-bottom: 1px dotted #ddd;
+    padding: 15px 0px;
+    position: relative;
+    font-size: 1.3rem;
+    }
+    #offenses .offense-box .offense-reports .report:last-child {
+    border-bottom: none;
+    }
+    #offenses .offense-box .offense-reports .report pre code {
+    display: block;
+    background: #000;
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 5px;
+    line-height: 1.6rem;
+    }
+    #offenses .offense-box .offense-reports .report .location {
+    font-weight: bold;
+    }
+    #offenses .offense-box .offense-reports .report .message code {
+    padding: 0.3em;
+    background-color: rgba(0,0,0,0.07);
+    border-radius: 3px;
+    }
+    .severity {
+    text-transform: capitalize;
+    font-weight: bold;
+    }
+    .highlight {
+    padding: 2px;
+    border-radius: 2px;
+    font-weight: bold;
+    }
+
+    .severity.refactor {
+    color: rgba(237, 156, 40, 1.0);
+    }
+    .highlight.refactor {
+    background-color: rgba(237, 156, 40, 0.6);
+    border: 1px solid rgba(237, 156, 40, 0.4);
+    }
+
+    .severity.convention {
+    color: rgba(237, 156, 40, 1.0);
+    }
+    .highlight.convention {
+    background-color: rgba(237, 156, 40, 0.6);
+    border: 1px solid rgba(237, 156, 40, 0.4);
+    }
+
+    .severity.warning {
+    color: rgba(150, 40, 239, 1.0);
+    }
+    .highlight.warning {
+    background-color: rgba(150, 40, 239, 0.6);
+    border: 1px solid rgba(150, 40, 239, 0.4);
+    }
+
+    .severity.error {
+    color: rgba(210, 50, 45, 1.0);
+    }
+    .highlight.error {
+    background-color: rgba(210, 50, 45, 0.6);
+    border: 1px solid rgba(210, 50, 45, 0.4);
+    }
+
+    .severity.fatal {
+    color: rgba(210, 50, 45, 1.0);
+    }
+    .highlight.fatal {
+    background-color: rgba(210, 50, 45, 0.6);
+    border: 1px solid rgba(210, 50, 45, 0.4);
+    }
+
+    footer {
+    margin-bottom: 20px;
+    margin-right: 20px;
+    font-size: 1.3rem;
+    color: #777;
+    text-align: right;
+    }
+    .extra-code {
+      color: #ED9C28
+    }
+    </style>
+
+    <script>
+    (function() {
+      // floating headers. requires classList support.
+      if (!('classList' in document.createElement("_"))) return;
+
+      var loaded = false,
+        boxes,
+        boxPositions;
+
+      window.onload = function() {
+        var scrollY = window.scrollY;
+        boxes = document.querySelectorAll('.offense-box');
+        boxPositions = [];
+        for (var i = 0; i < boxes.length; i++)
+          // need to add scrollY because the page might be somewhere other than the top when loaded.
+          boxPositions[i] = boxes[i].getBoundingClientRect().top + scrollY;
+        loaded = true;
+      };
+
+      window.onscroll = function() {
+        if (!loaded) return;
+        var i,
+          idx,
+          scrollY = window.scrollY;
+        for (i = 0; i < boxPositions.length; i++) {
+          if (scrollY <= boxPositions[i] - 1) {
+            idx = i;
+            break;
+          }
+        }
+        if (typeof idx == 'undefined') idx = boxes.length;
+        if (idx > 0)
+          boxes[idx - 1].classList.add('fixed');
+        for (i = 0; i < boxes.length; i++) {
+          if (i < idx) continue;
+          boxes[i].classList.remove('fixed');
+        }
+      };
+    })();
+    </script>
+  </head>
+  <body>
+    <div id="header">
+      <img class="logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEwAAABMCAYAAADHl1ErAAAKQWlDQ1BJQ0Mg
+UHJvZmlsZQAASA2dlndUU9kWh8+9N73QEiIgJfQaegkg0jtIFQRRiUmAUAKG
+hCZ2RAVGFBEpVmRUwAFHhyJjRRQLg4Ji1wnyEFDGwVFEReXdjGsJ7601896a
+/cdZ39nnt9fZZ+9917oAUPyCBMJ0WAGANKFYFO7rwVwSE8vE9wIYEAEOWAHA
+4WZmBEf4RALU/L09mZmoSMaz9u4ugGS72yy/UCZz1v9/kSI3QyQGAApF1TY8
+fiYX5QKUU7PFGTL/BMr0lSkyhjEyFqEJoqwi48SvbPan5iu7yZiXJuShGlnO
+Gbw0noy7UN6aJeGjjAShXJgl4GejfAdlvVRJmgDl9yjT0/icTAAwFJlfzOcm
+oWyJMkUUGe6J8gIACJTEObxyDov5OWieAHimZ+SKBIlJYqYR15hp5ejIZvrx
+s1P5YjErlMNN4Yh4TM/0tAyOMBeAr2+WRQElWW2ZaJHtrRzt7VnW5mj5v9nf
+Hn5T/T3IevtV8Sbsz55BjJ5Z32zsrC+9FgD2JFqbHbO+lVUAtG0GQOXhrE/v
+IADyBQC03pzzHoZsXpLE4gwnC4vs7GxzAZ9rLivoN/ufgm/Kv4Y595nL7vtW
+O6YXP4EjSRUzZUXlpqemS0TMzAwOl89k/fcQ/+PAOWnNycMsnJ/AF/GF6FVR
+6JQJhIlou4U8gViQLmQKhH/V4X8YNicHGX6daxRodV8AfYU5ULhJB8hvPQBD
+IwMkbj96An3rWxAxCsi+vGitka9zjzJ6/uf6Hwtcim7hTEEiU+b2DI9kciWi
+LBmj34RswQISkAd0oAo0gS4wAixgDRyAM3AD3iAAhIBIEAOWAy5IAmlABLJB
+PtgACkEx2AF2g2pwANSBetAEToI2cAZcBFfADXALDIBHQAqGwUswAd6BaQiC
+8BAVokGqkBakD5lC1hAbWgh5Q0FQOBQDxUOJkBCSQPnQJqgYKoOqoUNQPfQj
+dBq6CF2D+qAH0CA0Bv0BfYQRmALTYQ3YALaA2bA7HAhHwsvgRHgVnAcXwNvh
+SrgWPg63whfhG/AALIVfwpMIQMgIA9FGWAgb8URCkFgkAREha5EipAKpRZqQ
+DqQbuY1IkXHkAwaHoWGYGBbGGeOHWYzhYlZh1mJKMNWYY5hWTBfmNmYQM4H5
+gqVi1bGmWCesP3YJNhGbjS3EVmCPYFuwl7ED2GHsOxwOx8AZ4hxwfrgYXDJu
+Na4Etw/XjLuA68MN4SbxeLwq3hTvgg/Bc/BifCG+Cn8cfx7fjx/GvyeQCVoE
+a4IPIZYgJGwkVBAaCOcI/YQRwjRRgahPdCKGEHnEXGIpsY7YQbxJHCZOkxRJ
+hiQXUiQpmbSBVElqIl0mPSa9IZPJOmRHchhZQF5PriSfIF8lD5I/UJQoJhRP
+ShxFQtlOOUq5QHlAeUOlUg2obtRYqpi6nVpPvUR9Sn0vR5Mzl/OX48mtk6uR
+a5Xrl3slT5TXl3eXXy6fJ18hf0r+pvy4AlHBQMFTgaOwVqFG4bTCPYVJRZqi
+lWKIYppiiWKD4jXFUSW8koGStxJPqUDpsNIlpSEaQtOledK4tE20Otpl2jAd
+Rzek+9OT6cX0H+i99AllJWVb5SjlHOUa5bPKUgbCMGD4M1IZpYyTjLuMj/M0
+5rnP48/bNq9pXv+8KZX5Km4qfJUilWaVAZWPqkxVb9UU1Z2qbapP1DBqJmph
+atlq+9Uuq43Pp893ns+dXzT/5PyH6rC6iXq4+mr1w+o96pMamhq+GhkaVRqX
+NMY1GZpumsma5ZrnNMe0aFoLtQRa5VrntV4wlZnuzFRmJbOLOaGtru2nLdE+
+pN2rPa1jqLNYZ6NOs84TXZIuWzdBt1y3U3dCT0svWC9fr1HvoT5Rn62fpL9H
+v1t/ysDQINpgi0GbwaihiqG/YZ5ho+FjI6qRq9Eqo1qjO8Y4Y7ZxivE+41sm
+sImdSZJJjclNU9jU3lRgus+0zwxr5mgmNKs1u8eisNxZWaxG1qA5wzzIfKN5
+m/krCz2LWIudFt0WXyztLFMt6ywfWSlZBVhttOqw+sPaxJprXWN9x4Zq42Oz
+zqbd5rWtqS3fdr/tfTuaXbDdFrtOu8/2DvYi+yb7MQc9h3iHvQ732HR2KLuE
+fdUR6+jhuM7xjOMHJ3snsdNJp9+dWc4pzg3OowsMF/AX1C0YctFx4bgccpEu
+ZC6MX3hwodRV25XjWuv6zE3Xjed2xG3E3dg92f24+ysPSw+RR4vHlKeT5xrP
+C16Il69XkVevt5L3Yu9q76c+Oj6JPo0+E752vqt9L/hh/QL9dvrd89fw5/rX
++08EOASsCegKpARGBFYHPgsyCRIFdQTDwQHBu4IfL9JfJFzUFgJC/EN2hTwJ
+NQxdFfpzGC4sNKwm7Hm4VXh+eHcELWJFREPEu0iPyNLIR4uNFksWd0bJR8VF
+1UdNRXtFl0VLl1gsWbPkRoxajCCmPRYfGxV7JHZyqffS3UuH4+ziCuPuLjNc
+lrPs2nK15anLz66QX8FZcSoeGx8d3xD/iRPCqeVMrvRfuXflBNeTu4f7kufG
+K+eN8V34ZfyRBJeEsoTRRJfEXYljSa5JFUnjAk9BteB1sl/ygeSplJCUoykz
+qdGpzWmEtPi000IlYYqwK10zPSe9L8M0ozBDuspp1e5VE6JA0ZFMKHNZZruY
+jv5M9UiMJJslg1kLs2qy3mdHZZ/KUcwR5vTkmuRuyx3J88n7fjVmNXd1Z752
+/ob8wTXuaw6thdauXNu5Tnddwbrh9b7rj20gbUjZ8MtGy41lG99uit7UUaBR
+sL5gaLPv5sZCuUJR4b0tzlsObMVsFWzt3WazrWrblyJe0fViy+KK4k8l3JLr
+31l9V/ndzPaE7b2l9qX7d+B2CHfc3em681iZYlle2dCu4F2t5czyovK3u1fs
+vlZhW3FgD2mPZI+0MqiyvUqvakfVp+qk6oEaj5rmvep7t+2d2sfb17/fbX/T
+AY0DxQc+HhQcvH/I91BrrUFtxWHc4azDz+ui6rq/Z39ff0TtSPGRz0eFR6XH
+wo911TvU1zeoN5Q2wo2SxrHjccdv/eD1Q3sTq+lQM6O5+AQ4ITnx4sf4H++e
+DDzZeYp9qukn/Z/2ttBailqh1tzWibakNml7THvf6YDTnR3OHS0/m/989Iz2
+mZqzymdLz5HOFZybOZ93fvJCxoXxi4kXhzpXdD66tOTSna6wrt7LgZevXvG5
+cqnbvfv8VZerZ645XTt9nX297Yb9jdYeu56WX+x+aem172296XCz/ZbjrY6+
+BX3n+l37L972un3ljv+dGwOLBvruLr57/17cPel93v3RB6kPXj/Mejj9aP1j
+7OOiJwpPKp6qP6391fjXZqm99Oyg12DPs4hnj4a4Qy//lfmvT8MFz6nPK0a0
+RupHrUfPjPmM3Xqx9MXwy4yX0+OFvyn+tveV0auffnf7vWdiycTwa9HrmT9K
+3qi+OfrW9m3nZOjk03dp76anit6rvj/2gf2h+2P0x5Hp7E/4T5WfjT93fAn8
+8ngmbWbm3/eE8/syOll+AAAACXBIWXMAAAsTAAALEwEAmpwYAAAEJGlUWHRY
+TUw6Y29tLmFkb2JlLnhtcAAAAAAAPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9i
+ZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS40LjAiPgogICA8cmRm
+OlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjIt
+cmRmLXN5bnRheC1ucyMiPgogICAgICA8cmRmOkRlc2NyaXB0aW9uIHJkZjph
+Ym91dD0iIgogICAgICAgICAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRv
+YmUuY29tL3RpZmYvMS4wLyIKICAgICAgICAgICAgeG1sbnM6ZXhpZj0iaHR0
+cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICAgICAgICAgIHhtbG5z
+OmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIKICAgICAg
+ICAgICAgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAv
+Ij4KICAgICAgICAgPHRpZmY6UmVzb2x1dGlvblVuaXQ+MTwvdGlmZjpSZXNv
+bHV0aW9uVW5pdD4KICAgICAgICAgPHRpZmY6Q29tcHJlc3Npb24+NTwvdGlm
+ZjpDb21wcmVzc2lvbj4KICAgICAgICAgPHRpZmY6WFJlc29sdXRpb24+NzI8
+L3RpZmY6WFJlc29sdXRpb24+CiAgICAgICAgIDx0aWZmOk9yaWVudGF0aW9u
+PjE8L3RpZmY6T3JpZW50YXRpb24+CiAgICAgICAgIDx0aWZmOllSZXNvbHV0
+aW9uPjcyPC90aWZmOllSZXNvbHV0aW9uPgogICAgICAgICA8ZXhpZjpQaXhl
+bFhEaW1lbnNpb24+NzY8L2V4aWY6UGl4ZWxYRGltZW5zaW9uPgogICAgICAg
+ICA8ZXhpZjpDb2xvclNwYWNlPjE8L2V4aWY6Q29sb3JTcGFjZT4KICAgICAg
+ICAgPGV4aWY6UGl4ZWxZRGltZW5zaW9uPjc2PC9leGlmOlBpeGVsWURpbWVu
+c2lvbj4KICAgICAgICAgPGRjOnN1YmplY3Q+CiAgICAgICAgICAgIDxyZGY6
+U2VxLz4KICAgICAgICAgPC9kYzpzdWJqZWN0PgogICAgICAgICA8eG1wOk1v
+ZGlmeURhdGU+MjAxNDowOToyMyAyMjowOToxNDwveG1wOk1vZGlmeURhdGU+
+CiAgICAgICAgIDx4bXA6Q3JlYXRvclRvb2w+UGl4ZWxtYXRvciAzLjIuMTwv
+eG1wOkNyZWF0b3JUb29sPgogICAgICA8L3JkZjpEZXNjcmlwdGlvbj4KICAg
+PC9yZGY6UkRGPgo8L3g6eG1wbWV0YT4KkpvroQAABkNJREFUeAHtm0uIHFUY
+hWveM8ZpHN/RYCIS34mKGGSMMmLA6CKILmQwBOJCEcwqKzELceVWN+IyIgQM
+4gt84SMqBpNBkBiJGkEFMRFNMmSSzEzm5fmG7qEpbt1bt7q6XuOBQ3Xfuvf/
+z/nr3qrq6u6OIH9cLAlrxGvr20e0vVsE34rviL+Lv9W3J7XNDR05Zb5deR8U
+7xfXiVeKnaIN89p5XPxB/EL8WPxerCxqcrZd3CdOiwstkhj7RGISuzLol5On
+xSNiq0WKGk9scpCr1LhP6veLUUbTbicXOUuHHil+QZwS0y6KKx45yY2GUuAy
+qXxXdBlr9340oKXQWC11Y2K7ixE3PlrQVEhcI1WHxLhmsuqHJrQVCtx8cpOZ
+VRF886ANjYVAl1TsFX1NZN0fjWjNHTulIGvzSfOhNVfcpuwTYlIDWY9DK5pz
+AdP7EzFr063mQ3MuS/PREharUWy0Zwruog+IDQFl26I9008Cm0tcrMbBxYM3
+XM+gogI+GbWjRO2ZebhKRTklNo5UWbd4wIsXksywEWW4yCtLMTvjYcRXWpKC
+bfJNUuD+3l58C9Yt83cWuAC+0vCCp7aBT/3nxbKet8K68eL1JMO3unzLtFtk
+WwVQwKp4Kebx8KnurbLwjLhBHCimHW9VkxpxUHxVPOw92jJgi/bxjXP4HFCV
+93jDYypYrSj/iFUpTpQPPK4RrYhzW7FVES61RqnGTjw+4bISp2B3uIJUaL/T
+a5yC9VaoIC4rTq9xCjbrylKh/U6vroLdpGKsr1BBXFbwiudE4NP8j2LUVaWq
+7XiOfBpjm2HbNPBmcbkBz3g3wnanf1ojBo2j6o1DnZ3B6IpasL6nb/Hng0y5
+IgKT8+Khmelgz9nTwal53lnB13E1Uw9bwaz+r+jqCvZcsjIY7hsIZhdXrSl8
+sdq69Tl7//RkMHriWPD33JxLnLE2vk8rlpLsGBwKhvsHggn30Voak/+LhUXN
+aN81/m8iObZzWGRABg339QfTC9ZJGDk+zx1oRnsi4xKeaBxlmlJi45zNsxox
+cqMZ7UkPdeKCvX3uTNCrkpWpaGhFM9qTFizxOWy3rjZru3uD7RfWgoGOcpRt
+UjPrlYnxAO1JYXN6QEF5WGgFtxQ39vQGXbZI1gjZ7JzTlPpp5vzirUWMjGPq
+4/QejjOiBmbuciTevcH57TWRu7zlUjS84jnRuV3jFr+z+1Lb5VKwr+qe8W6E
+q5I87jhpHFnNxhOyZX3E4yoYZcnl13o5HQ+n1zgFS34Nzsl1C2mdXuMU7PMW
+BJRtaCpeecTDfUnVT/x4tD7O8jn616nz1xUuGt7w6ITP/Xmfoj0s8n/sFSIz
+Low4Szw8Jov33F+FgfezIn+r+UDkH77/I+0K+MywRm7+0P6hGF7vM2rbIh4V
+i4S1EvOeGP6ZOY+hHxKPi7GR5GkFYxDBsmwGS5RlWzSg6QYxPDlYjt7+vQfU
+q2G6G6bNdF6rD1naPKZXHNk0wEx/yxEITWgLzzCTB0eoBBV2RrR3eEC7Xxcv
+sHeLvXdUPcfFz2KPaLFjllc1foD7hphWsbBOLGISOxMkXZJJxLEMuWAALuEY
+PcebBKBQW0XOT8Qk9ndiIbFKqlgGnBuayS+SbxGj0KUdz4sUaUdUJ492YhCL
+mMSOAppMv/zGA17ajqQFawhj+YSvWI19PltixFmKqRYsyyXZKEZaS4fZnVas
+hjbnNo+ChUVtVMP1omvWUaCfxW/EUuFqqTX9m21W7es8nTyl/oxrPhfaXtOX
+MT5AkykHHvDSdgwpw1+iyRgfjeLiHnU8I5ri2NoYw9i4QJMpHh7w0nZw7zYm
+mkS8GTP7SvX7JSKGKW64jbHEiIO96hQez3s8ZHYf+nKECKb+NtEGzpvviyYT
+Pm3EcJ2D0WJajuTBQ2bYqEz8wMpkcErtu8TLxTC4X3pJNI1L0kYs0z0YudGA
+FlNctOPBG64rU1RARH4kborqoPZj4mGx8cUCuVaJG8Q0cVDB/hQpDKiJ/C/K
+tmQ/1f7NovNXdeqTGu5SJB6RmI5gkdvQjPZc8KyyFrk4Jm1ozhXPKTvPzE3i
+itSGRrQWAo9LxR9ikQrUrAVtaCwUOMm+KB4Vm8Xm+RotaLJdALQ7Xwwq/b3i
+TvFXMeuCkZPcaEBLqvgPBhCuiZo8+sAAAAAASUVORK5CYII=
+" alt="">
+      <h1 class="title">RuboCop Inspection Report</h1>
+    </div>
+    <div class="information">
+      <div class="infobox">
+        <div class="total">
+          25 files inspected,
+          117 offenses detected:
+        </div>
+        <ul class="offenses-list">
+          
+            
+            <li>
+              <a href="#offense_app/concerns/shopping_cart/current_order.rb">
+                app/concerns/shopping_cart/current_order.rb - 10 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_app/concerns/shopping_cart/step_checkout_show.rb">
+                app/concerns/shopping_cart/step_checkout_show.rb - 11 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_app/concerns/shopping_cart/step_checkout_update.rb">
+                app/concerns/shopping_cart/step_checkout_update.rb - 13 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_app/controllers/shopping_cart/application_controller.rb">
+                app/controllers/shopping_cart/application_controller.rb - 1 offense
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_app/controllers/shopping_cart/carts_controller.rb">
+                app/controllers/shopping_cart/carts_controller.rb - 4 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_app/controllers/shopping_cart/checkout_steps_controller.rb">
+                app/controllers/shopping_cart/checkout_steps_controller.rb - 6 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_app/controllers/shopping_cart/order_items_controller.rb">
+                app/controllers/shopping_cart/order_items_controller.rb - 7 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_app/controllers/shopping_cart/orders_controller.rb">
+                app/controllers/shopping_cart/orders_controller.rb - 5 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_app/controllers/shopping_cart/settings_controller.rb">
+                app/controllers/shopping_cart/settings_controller.rb - 3 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_app/decorators/shopping_cart/order_decorator.rb">
+                app/decorators/shopping_cart/order_decorator.rb - 2 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_app/forms/shopping_cart/setting_address.rb">
+                app/forms/shopping_cart/setting_address.rb - 12 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_app/helpers/shopping_cart/application_helper.rb">
+                app/helpers/shopping_cart/application_helper.rb - 3 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_app/helpers/shopping_cart/checkout_steps_helper.rb">
+                app/helpers/shopping_cart/checkout_steps_helper.rb - 2 offenses
+              </a>
+            </li>
+          
+            
+            
+            <li>
+              <a href="#offense_app/mailers/shopping_cart/application_mailer.rb">
+                app/mailers/shopping_cart/application_mailer.rb - 1 offense
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_app/models/shopping_cart/application_record.rb">
+                app/models/shopping_cart/application_record.rb - 1 offense
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_app/models/shopping_cart/billing_address.rb">
+                app/models/shopping_cart/billing_address.rb - 3 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_app/models/shopping_cart/country.rb">
+                app/models/shopping_cart/country.rb - 1 offense
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_app/models/shopping_cart/coupon.rb">
+                app/models/shopping_cart/coupon.rb - 2 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_app/models/shopping_cart/credit_card.rb">
+                app/models/shopping_cart/credit_card.rb - 6 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_app/models/shopping_cart/order.rb">
+                app/models/shopping_cart/order.rb - 13 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_app/models/shopping_cart/order_item.rb">
+                app/models/shopping_cart/order_item.rb - 5 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_app/models/shopping_cart/order_status.rb">
+                app/models/shopping_cart/order_status.rb - 1 offense
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_app/models/shopping_cart/shipping_address.rb">
+                app/models/shopping_cart/shipping_address.rb - 3 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_app/models/shopping_cart/shipping_method.rb">
+                app/models/shopping_cart/shipping_method.rb - 2 offenses
+              </a>
+            </li>
+          
+        </ul>
+      </div>
+    </div>
+    <div id="offenses">
+      
+      
+      <div class="offense-box" id="offense_app/concerns/shopping_cart/current_order.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>app/concerns/shopping_cart/current_order.rb - 10 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Missing top-level module documentation comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">module</span> ShoppingCart::Current_order</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Use CamelCase for classes and modules.</span>
+            </div>
+            
+            <pre><code>module <span class="highlight convention">ShoppingCart::Current_order</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Use nested module/class definitions instead of compact style.</span>
+            </div>
+            
+            <pre><code>module <span class="highlight convention">ShoppingCart::Current_order</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #8</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Assignment Branch Condition size for current_order is too high. [19.52/15]</span>
+            </div>
+            
+            <pre><code>  <span class="highlight convention">def</span> current_order</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #10</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Use 2 (not -17) spaces for indentation.</span>
+            </div>
+            
+            <pre><code>      <span class="highlight convention">ShoppingCart::Ord</span>er.find(session[:order_id])</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #11</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Align <code>elsif</code> with <code>if</code>.</span>
+            </div>
+            
+            <pre><code>    <span class="highlight convention">elsif</span> !current_user.nil? &amp;&amp; current_user.orders.find_by(order_status_id: nil).present?</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #11</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Line is too long. [90/80]</span>
+            </div>
+            
+            <pre><code>    elsif !current_user.nil? &amp;&amp; current_user.orders.find_by(order_status_id: nil<span class="highlight convention">).present?</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #13</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Align <code>else</code> with <code>if</code>.</span>
+            </div>
+            
+            <pre><code>    <span class="highlight convention">else</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #15</span> –
+              <span class="severity warning">warning:</span>
+              <span class="message"><code>end</code> at 15, 4 is not aligned with <code>if</code> at 9, 23.</span>
+            </div>
+            
+            <pre><code>    <span class="highlight warning">end</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #16</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message"><code>rescue</code> at 16, 4 is not aligned with <code>end</code> at 19, 2.</span>
+            </div>
+            
+            <pre><code>    <span class="highlight convention">rescue</span> ActiveRecord::RecordNotFound</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_app/concerns/shopping_cart/step_checkout_show.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>app/concerns/shopping_cart/step_checkout_show.rb - 11 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Missing top-level module documentation comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">module</span> ShoppingCart::StepCheckoutShow</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Use nested module/class definitions instead of compact style.</span>
+            </div>
+            
+            <pre><code>module <span class="highlight convention">ShoppingCart::StepCheckoutShow</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #4</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Block has too many lines. [41/25]</span>
+            </div>
+            
+            <pre><code>  <span class="highlight convention">included do</span> <span class="extra-code">...</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #5</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Extra empty line detected at block body beginning.</span>
+            </div>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #8</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Method has too many lines. [19/10]</span>
+            </div>
+            
+            <pre><code>    <span class="highlight convention">def step_jump(specific_step)</span> <span class="extra-code">...</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #35</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Use <code>if current_order.billing_address.blank?</code> instead of <code>unless current_order.billing_address.present?</code>.</span>
+            </div>
+            
+            <pre><code>      return jump_to(:address) <span class="highlight convention">unless current_order.billing_address.present?</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #36</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Line is too long. [99/80]</span>
+            </div>
+            
+            <pre><code>      @delivery = ShoppingCart::ShippingMethod.find_or_initialize_by(id: @order.<span class="highlight convention">shipping_method_id)</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #40</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Use <code>if current_order.shipping.blank?</code> instead of <code>unless current_order.shipping.present?</code>.</span>
+            </div>
+            
+            <pre><code>      return jump_to(:delivery) <span class="highlight convention">unless current_order.shipping.present?</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #41</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Line is too long. [84/80]</span>
+            </div>
+            
+            <pre><code>      @payment = ShoppingCart::CreditCard.find_or_initialize_by(order_id: @order<span class="highlight convention">.id)</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #45</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Use <code>if current_order.credit_card.blank?</code> instead of <code>unless current_order.credit_card.present?</code>.</span>
+            </div>
+            
+            <pre><code>      return jump_to(:payment) <span class="highlight convention">unless current_order.credit_card.present?</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #47</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Use a guard clause instead of wrapping the code inside a conditional expression.</span>
+            </div>
+            
+            <pre><code>      <span class="highlight convention">if</span> @step == :complete</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_app/concerns/shopping_cart/step_checkout_update.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>app/concerns/shopping_cart/step_checkout_update.rb - 13 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Missing top-level module documentation comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">module</span> ShoppingCart::StepCheckoutUpdate</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Use nested module/class definitions instead of compact style.</span>
+            </div>
+            
+            <pre><code>module <span class="highlight convention">ShoppingCart::StepCheckoutUpdate</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #4</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Block has too many lines. [43/25]</span>
+            </div>
+            
+            <pre><code>  <span class="highlight convention">included do</span> <span class="extra-code">...</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #5</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Extra empty line detected at block body beginning.</span>
+            </div>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #8</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Assignment Branch Condition size for update_complete is too high. [16.03/15]</span>
+            </div>
+            
+            <pre><code>    <span class="highlight convention">def</span> update_complete</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #10</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Line is too long. [86/80]</span>
+            </div>
+            
+            <pre><code>      current_order.update(number: generate_number_order) if current_order.numbe<span class="highlight convention">r.nil?</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #22</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Assignment Branch Condition size for update_payment is too high. [17.23/15]</span>
+            </div>
+            
+            <pre><code>    <span class="highlight convention">def</span> update_payment</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #24</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Line is too long. [91/80]</span>
+            </div>
+            
+            <pre><code>      @payment = ShoppingCart::CreditCard.find_or_initialize_by(order_id: curren<span class="highlight convention">t_order.id)</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #33</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Use <code>delete!</code> instead of <code>gsub!</code>.</span>
+            </div>
+            
+            <pre><code>      params[:credit_card][:number].<span class="highlight convention">gsub! &#39;-&#39;,&#39;&#39;</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #33</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Space missing after comma.</span>
+            </div>
+            
+            <pre><code>      params[:credit_card][:number].gsub! &#39;-&#39;<span class="highlight convention">,</span>&#39;&#39;</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #37</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Assignment Branch Condition size for update_delivery is too high. [15.26/15]</span>
+            </div>
+            
+            <pre><code>    <span class="highlight convention">def</span> update_delivery</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #42</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Line is too long. [84/80]</span>
+            </div>
+            
+            <pre><code>      unless current_order.update(shipping_method_id: params[:shipping_method][:<span class="highlight convention">id])</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #52</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Line is too long. [95/80]</span>
+            </div>
+            
+            <pre><code>      return render_wizard unless @address.save(params[:setting_address], params<span class="highlight convention">[:use_billing])</span></code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_app/controllers/shopping_cart/application_controller.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>app/controllers/shopping_cart/application_controller.rb - 1 offense</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #2</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Missing top-level class documentation comment.</span>
+            </div>
+            
+            <pre><code>  <span class="highlight convention">class</span> ApplicationController &lt; ::ApplicationController</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_app/controllers/shopping_cart/carts_controller.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>app/controllers/shopping_cart/carts_controller.rb - 4 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>require_dependency <span class="highlight convention">&quot;shopping_cart/application_controller&quot;</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #4</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Missing top-level class documentation comment.</span>
+            </div>
+            
+            <pre><code>  <span class="highlight convention">class</span> CartsController &lt; ApplicationController</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #5</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Extra empty line detected at class body beginning.</span>
+            </div>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #17</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Use <code>find_by</code> instead of dynamic <code>find_by_code</code>.</span>
+            </div>
+            
+            <pre><code>      <span class="highlight convention">Coupon.find_by_code(params[:coupon])</span></code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_app/controllers/shopping_cart/checkout_steps_controller.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>app/controllers/shopping_cart/checkout_steps_controller.rb - 6 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>require_dependency <span class="highlight convention">&quot;shopping_cart/application_controller&quot;</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #4</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Missing top-level class documentation comment.</span>
+            </div>
+            
+            <pre><code>  <span class="highlight convention">class</span> CheckoutStepsController &lt; ApplicationController</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #5</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Extra empty line detected at class body beginning.</span>
+            </div>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #32</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Assignment Branch Condition size for redirect_steps is too high. [15.3/15]</span>
+            </div>
+            
+            <pre><code>    <span class="highlight convention">def</span> redirect_steps</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #33</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Line is too long. [156/80]</span>
+            </div>
+            
+            <pre><code>      return redirect_to wizard_path(params[:redirect]) if params[:redirect].pre<span class="highlight convention">sent? &amp;&amp; (params[:redirect] == &#39;confirm&#39; || params[:redirect] == &#39;complete&#39;)</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #36</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Extra empty line detected at class body end.</span>
+            </div>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_app/controllers/shopping_cart/order_items_controller.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>app/controllers/shopping_cart/order_items_controller.rb - 7 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>require_dependency <span class="highlight convention">&quot;shopping_cart/application_controller&quot;</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #4</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Missing top-level class documentation comment.</span>
+            </div>
+            
+            <pre><code>  <span class="highlight convention">class</span> OrderItemsController &lt; ApplicationController</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #7</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Assignment Branch Condition size for create is too high. [26.19/15]</span>
+            </div>
+            
+            <pre><code>    <span class="highlight convention">def</span> create</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #7</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Method has too many lines. [12/10]</span>
+            </div>
+            
+            <pre><code>    <span class="highlight convention">def create</span> <span class="extra-code">...</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #9</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Line is too long. [87/80]</span>
+            </div>
+            
+            <pre><code>        @item = current_order.order_items.find_by(product_id: item_params[:produ<span class="highlight convention">ct_id])</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #17</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Line is too long. [144/80]</span>
+            </div>
+            
+            <pre><code>          format.js { render layout: false, locals: { qty: current_order.total_q<span class="highlight convention">uantity }, template: &#39;shopping_cart/carts/_head_quantity_cart&#39; }</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #39</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Line is too long. [142/80]</span>
+            </div>
+            
+            <pre><code>        format.js { render layout: false, locals: { qty: current_order.total_qua<span class="highlight convention">ntity }, template: &#39;shopping_cart/carts/_head_quantity_cart&#39; }</span></code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_app/controllers/shopping_cart/orders_controller.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>app/controllers/shopping_cart/orders_controller.rb - 5 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>require_dependency <span class="highlight convention">&quot;shopping_cart/application_controller&quot;</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #4</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Missing top-level class documentation comment.</span>
+            </div>
+            
+            <pre><code>  <span class="highlight convention">class</span> OrdersController &lt; ApplicationController</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #11</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Use the return of the conditional for variable assignment and comparison.</span>
+            </div>
+            
+            <pre><code>      <span class="highlight convention">if params[:filter].present?</span> <span class="extra-code">...</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #22</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Redundant <code>return</code> detected.</span>
+            </div>
+            
+            <pre><code>      <span class="highlight convention">return</span> render :order_details</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #26</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Line is too long. [159/80]</span>
+            </div>
+            
+            <pre><code>      return Order.where(order_status_id: params[:filter].to_i).accessible_by(cu<span class="highlight convention">rrent_ability) if Order.find_by(order_status_id: params[:filter].to_i).present?</span></code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_app/controllers/shopping_cart/settings_controller.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>app/controllers/shopping_cart/settings_controller.rb - 3 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>require_dependency <span class="highlight convention">&quot;shopping_cart/application_controller&quot;</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #4</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Extra empty line detected at module body beginning.</span>
+            </div>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #5</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Missing top-level class documentation comment.</span>
+            </div>
+            
+            <pre><code>  <span class="highlight convention">class</span> SettingsController &lt; ApplicationController</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_app/decorators/shopping_cart/order_decorator.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>app/decorators/shopping_cart/order_decorator.rb - 2 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #2</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Missing top-level class documentation comment.</span>
+            </div>
+            
+            <pre><code>  <span class="highlight convention">class</span> OrderDecorator &lt; Draper::Decorator</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #5</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Use snake_case for method names.</span>
+            </div>
+            
+            <pre><code>    def <span class="highlight convention">date_Y_m_d</span></code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_app/forms/shopping_cart/setting_address.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>app/forms/shopping_cart/setting_address.rb - 12 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #3</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Missing top-level class documentation comment.</span>
+            </div>
+            
+            <pre><code>  <span class="highlight convention">class</span> SettingAddress</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #14</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Cyclomatic complexity for save is too high. [7/6]</span>
+            </div>
+            
+            <pre><code>    <span class="highlight convention">def</span> save(params, use_billing = nil)</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #14</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Perceived complexity for save is too high. [8/7]</span>
+            </div>
+            
+            <pre><code>    <span class="highlight convention">def</span> save(params, use_billing = nil)</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #15</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Line is too long. [106/80]</span>
+            </div>
+            
+            <pre><code>      @billing.order_id = @current_order &amp;&amp; @shipping.order_id = @current_order <span class="highlight convention">if @current_order.present?</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #16</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Line is too long. [83/80]</span>
+            </div>
+            
+            <pre><code>      return false unless @billing.update(params_address(params, :billing_addres<span class="highlight convention">s))</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #18</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Line is too long. [86/80]</span>
+            </div>
+            
+            <pre><code>        return false unless @shipping.update(params_address(params, :billing_add<span class="highlight convention">ress))</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #20</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Line is too long. [87/80]</span>
+            </div>
+            
+            <pre><code>        return false unless @shipping.update(params_address(params, :shipping_ad<span class="highlight convention">dress))</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #22</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Redundant <code>return</code> detected.</span>
+            </div>
+            
+            <pre><code>      <span class="highlight convention">return</span> true</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #28</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Line is too long. [85/80]</span>
+            </div>
+            
+            <pre><code>      @billing = ShoppingCart::BillingAddress.find_or_initialize_by(user_id: use<span class="highlight convention">r_id)</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #32</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Line is too long. [87/80]</span>
+            </div>
+            
+            <pre><code>      @shipping = ShoppingCart::ShippingAddress.find_or_initialize_by(user_id: u<span class="highlight convention">ser_id)</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #36</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Line is too long. [102/80]</span>
+            </div>
+            
+            <pre><code>      params.require(type).permit(:first_name, :last_name, :address, :city, :zip<span class="highlight convention">, :country_id, :phone)</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #38</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Extra empty line detected at class body end.</span>
+            </div>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_app/helpers/shopping_cart/application_helper.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>app/helpers/shopping_cart/application_helper.rb - 3 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #2</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Missing top-level module documentation comment.</span>
+            </div>
+            
+            <pre><code>  <span class="highlight convention">module</span> ApplicationHelper</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #4</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Tagging a string as html safe may be a security risk.</span>
+            </div>
+            
+            <pre><code>      &quot;&lt;span class=&#39;shop-quantity&#39;&gt;#{current_order.total_quantity}&lt;/span&gt;&quot;.<span class="highlight convention">html_safe</span> if current_order.order_items.count.positive?</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #4</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Line is too long. [129/80]</span>
+            </div>
+            
+            <pre><code>      &quot;&lt;span class=&#39;shop-quantity&#39;&gt;#{current_order.total_quantity}&lt;/span&gt;&quot;.html_<span class="highlight convention">safe if current_order.order_items.count.positive?</span></code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_app/helpers/shopping_cart/checkout_steps_helper.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>app/helpers/shopping_cart/checkout_steps_helper.rb - 2 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #2</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Missing top-level module documentation comment.</span>
+            </div>
+            
+            <pre><code>  <span class="highlight convention">module</span> CheckoutStepsHelper</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #4</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Line is too long. [82/80]</span>
+            </div>
+            
+            <pre><code>      Hash[1, &#39;Address&#39;, 2, &#39;Delivery&#39;, 3, &#39;Payment&#39;, 4, &#39;Confirm&#39;, 5, &#39;Complete<span class="highlight convention">&#39;]</span></code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      
+      
+      <div class="offense-box" id="offense_app/mailers/shopping_cart/application_mailer.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>app/mailers/shopping_cart/application_mailer.rb - 1 offense</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #2</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Missing top-level class documentation comment.</span>
+            </div>
+            
+            <pre><code>  <span class="highlight convention">class</span> ApplicationMailer &lt; ActionMailer::Base</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_app/models/shopping_cart/application_record.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>app/models/shopping_cart/application_record.rb - 1 offense</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #2</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Missing top-level class documentation comment.</span>
+            </div>
+            
+            <pre><code>  <span class="highlight convention">class</span> ApplicationRecord &lt; ActiveRecord::Base</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_app/models/shopping_cart/billing_address.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>app/models/shopping_cart/billing_address.rb - 3 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #2</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Missing top-level class documentation comment.</span>
+            </div>
+            
+            <pre><code>  <span class="highlight convention">class</span> BillingAddress &lt; ApplicationRecord</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #6</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Line is too long. [100/80]</span>
+            </div>
+            
+            <pre><code>    validates :first_name, presence: true, length: { minimum: 2 }, format: { wit<span class="highlight convention">h: /\A[A-Za-z]+\z/ }</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #7</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Line is too long. [99/80]</span>
+            </div>
+            
+            <pre><code>    validates :last_name, presence: true, length: { minimum: 2 }, format: { with<span class="highlight convention">: /\A[A-Za-z]+\z/ }</span></code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_app/models/shopping_cart/country.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>app/models/shopping_cart/country.rb - 1 offense</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #2</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Missing top-level class documentation comment.</span>
+            </div>
+            
+            <pre><code>  <span class="highlight convention">class</span> Country &lt; ApplicationRecord</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_app/models/shopping_cart/coupon.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>app/models/shopping_cart/coupon.rb - 2 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #2</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Missing top-level class documentation comment.</span>
+            </div>
+            
+            <pre><code>  <span class="highlight convention">class</span> Coupon &lt; ApplicationRecord</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #5</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Line is too long. [89/80]</span>
+            </div>
+            
+            <pre><code>    validates :price, presence: true, numericality: { only_float: true, greater_<span class="highlight convention">than: 1 }</span></code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_app/models/shopping_cart/credit_card.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>app/models/shopping_cart/credit_card.rb - 6 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #2</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Missing top-level class documentation comment.</span>
+            </div>
+            
+            <pre><code>  <span class="highlight convention">class</span> CreditCard &lt; ApplicationRecord</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #5</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Line is too long. [91/80]</span>
+            </div>
+            
+            <pre><code>    validates :number, numericality: { only_integer: true }, format: { with: /\A<span class="highlight convention">[0-9]+\z/ }</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #6</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Line is too long. [95/80]</span>
+            </div>
+            
+            <pre><code>    validates :name, presence: true, length: { maximum: 50 }, format: { with: /\<span class="highlight convention">A[A-Za-z]+\z/ }</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #7</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Use <code>%r</code> around regular expression.</span>
+            </div>
+            
+            <pre><code>    validates :expired, presence: true, length: { in: 4..5 }, format: { with: <span class="highlight convention">/\A(1[0-2]|0[1-9])\/(1[5-9]|2\d)\z/</span> }</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #7</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Line is too long. [115/80]</span>
+            </div>
+            
+            <pre><code>    validates :expired, presence: true, length: { in: 4..5 }, format: { with: /\<span class="highlight convention">A(1[0-2]|0[1-9])\/(1[5-9]|2\d)\z/ }</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #8</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Line is too long. [92/80]</span>
+            </div>
+            
+            <pre><code>    validates :cvv, numericality: { only_integer: true }, format: { with: /\A[0-<span class="highlight convention">9]{3,4}\z/ }</span></code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_app/models/shopping_cart/order.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>app/models/shopping_cart/order.rb - 13 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #2</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Missing top-level class documentation comment.</span>
+            </div>
+            
+            <pre><code>  <span class="highlight convention">class</span> Order &lt; ApplicationRecord</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #4</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Line is too long. [90/80]</span>
+            </div>
+            
+            <pre><code>    has_many :products, class_name: ShoppingCart.product_class.to_s, through: :o<span class="highlight convention">rder_items</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #13</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Line is too long. [108/80]</span>
+            </div>
+            
+            <pre><code>    scope :processing, -&gt; { joins(:order_status).where(order_statuses: { name: &#39;<span class="highlight convention">Waiting for processing&#39; }) }</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #14</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Line is too long. [94/80]</span>
+            </div>
+            
+            <pre><code>    scope :delivered, -&gt; { joins(:order_status).where(order_statuses: { name: &#39;D<span class="highlight convention">elivered&#39; }) }</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #15</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Line is too long. [92/80]</span>
+            </div>
+            
+            <pre><code>    scope :canceled, -&gt; { joins(:order_status).where(order_statuses: { name: &#39;Ca<span class="highlight convention">nceled&#39; }) }</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #17</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Extra blank line detected.</span>
+            </div>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #19</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Redundant <code>self</code> detected.</span>
+            </div>
+            
+            <pre><code>      <span class="highlight convention">self.order_items</span>.inject(0) { |sum, item| sum + item.item_total_price }</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #23</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Redundant <code>self</code> detected.</span>
+            </div>
+            
+            <pre><code>      return <span class="highlight convention">self.coupon</span>.price if self.coupon.present?</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #23</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Redundant <code>self</code> detected.</span>
+            </div>
+            
+            <pre><code>      return self.coupon.price if <span class="highlight convention">self.coupon</span>.present?</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #28</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Redundant <code>self</code> detected.</span>
+            </div>
+            
+            <pre><code>      return <span class="highlight convention">self.shipping_method</span>.price if self.shipping_method.present?</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #28</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Redundant <code>self</code> detected.</span>
+            </div>
+            
+            <pre><code>      return self.shipping_method.price if <span class="highlight convention">self.shipping_method</span>.present?</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #37</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Redundant <code>self</code> detected.</span>
+            </div>
+            
+            <pre><code>      <span class="highlight convention">self.order_items</span>.sum(:quantity)</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #39</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Extra empty line detected at class body end.</span>
+            </div>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_app/models/shopping_cart/order_item.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>app/models/shopping_cart/order_item.rb - 5 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #2</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Missing top-level class documentation comment.</span>
+            </div>
+            
+            <pre><code>  <span class="highlight convention">class</span> OrderItem &lt; ApplicationRecord</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #3</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Extra empty line detected at class body beginning.</span>
+            </div>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #18</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Redundant <code>self</code> detected.</span>
+            </div>
+            
+            <pre><code>      <span class="highlight convention">self.price</span> * self.quantity</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #18</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Redundant <code>self</code> detected.</span>
+            </div>
+            
+            <pre><code>      self.price * <span class="highlight convention">self.quantity</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #21</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Use <code>delegate</code> to define delegations.</span>
+            </div>
+            
+            <pre><code>    <span class="highlight convention">def</span> product_price</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_app/models/shopping_cart/order_status.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>app/models/shopping_cart/order_status.rb - 1 offense</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #2</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Missing top-level class documentation comment.</span>
+            </div>
+            
+            <pre><code>  <span class="highlight convention">class</span> OrderStatus &lt; ApplicationRecord</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_app/models/shopping_cart/shipping_address.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>app/models/shopping_cart/shipping_address.rb - 3 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #2</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Missing top-level class documentation comment.</span>
+            </div>
+            
+            <pre><code>  <span class="highlight convention">class</span> ShippingAddress &lt; ApplicationRecord</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #6</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Line is too long. [100/80]</span>
+            </div>
+            
+            <pre><code>    validates :first_name, presence: true, length: { minimum: 2 }, format: { wit<span class="highlight convention">h: /\A[A-Za-z]+\z/ }</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #7</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Line is too long. [99/80]</span>
+            </div>
+            
+            <pre><code>    validates :last_name, presence: true, length: { minimum: 2 }, format: { with<span class="highlight convention">: /\A[A-Za-z]+\z/ }</span></code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_app/models/shopping_cart/shipping_method.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>app/models/shopping_cart/shipping_method.rb - 2 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #2</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Missing top-level class documentation comment.</span>
+            </div>
+            
+            <pre><code>  <span class="highlight convention">class</span> ShippingMethod &lt; ApplicationRecord</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #7</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Line is too long. [89/80]</span>
+            </div>
+            
+            <pre><code>    validates :price, presence: true, numericality: { only_float: true, greater_<span class="highlight convention">than: 1 }</span></code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+    <footer>
+      Generated by <a href="https://github.com/bbatsov/rubocop">RuboCop</a>
+      <span class="version">0.49.1</span>
+    </footer>
+  </body>
+</html>
