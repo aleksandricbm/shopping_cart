@@ -2,7 +2,6 @@ module ShoppingCart::StepCheckoutUpdate
   extend ActiveSupport::Concern
 
   included do
-
     private
 
     def update_complete
@@ -30,7 +29,7 @@ module ShoppingCart::StepCheckoutUpdate
     end
 
     def params_payment
-      params[:credit_card][:number].gsub! '-',''
+      params[:credit_card][:number].gsub! '-', ''
       params.require(:credit_card).permit(:number, :name, :expired, :cvv)
     end
 

@@ -15,10 +15,10 @@
       %tr
         %td
           .general-img-wrap-table
-            = image_tag number_image(item.book, 0), alt: 'book-img', class: 'cart-img-shadow pull-left'
+            = image_tag number_image(item.product, 0), alt: 'book-img', class: 'cart-img-shadow pull-left'
         %td
-          %p.title= item.book.name
-          %p.in-grey-600.fw-300= item.book.description
+          %p.title= item.product.name
+          %p.in-grey-600.fw-300= item.product.description
         %td
           %span.font-16.in-gold-500= "€ #{item.price}"
         %td

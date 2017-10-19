@@ -1,8 +1,7 @@
-require_dependency "shopping_cart/application_controller"
+require_dependency 'shopping_cart/application_controller'
 
 module ShoppingCart
   class CheckoutStepsController < ApplicationController
-
     include Wicked::Wizard
     steps :login, :address, :delivery, :payment, :confirm, :complete
 
@@ -33,6 +32,5 @@ module ShoppingCart
       return redirect_to wizard_path(params[:redirect]) if params[:redirect].present? && (params[:redirect] == 'confirm' || params[:redirect] == 'complete')
       redirect_to next_wizard_path
     end
-
   end
 end

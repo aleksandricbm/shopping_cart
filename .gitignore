@@ -2,4 +2,4 @@
 log/*.log
 pkg/
 test/
-
+spec/dummy/tmp

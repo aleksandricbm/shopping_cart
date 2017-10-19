@@ -18,7 +18,7 @@
               %div.has-error
                 %span.help-block= flash[:notice]
         %tbody
-          - ShippingMethod.all.each do |d|
+          - ShoppingCart::ShippingMethod.all.each do |d|
             %tr
               %td
                 .form-group.radio.mt-0.mb-0

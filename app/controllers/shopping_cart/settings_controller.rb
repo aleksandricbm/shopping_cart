@@ -1,7 +1,6 @@
-require_dependency "shopping_cart/application_controller"
+require_dependency 'shopping_cart/application_controller'
 
 module ShoppingCart
-
   class SettingsController < ApplicationController
     before_action :authenticate_user!
 
