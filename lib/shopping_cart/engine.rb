@@ -19,12 +19,6 @@ module ShoppingCart
       conf.helper false
     end
 
-    # initializer 'include module' do
-    #   ActiveSupport.on_load :action_controller do
-    #     include ShoppingCart::Current_order
-    #   end
-    # end
-
     initializer :inject_helpers do
       ActiveSupport.on_load :action_controller do
         ::ApplicationController.send(:helper, ShoppingCart::Engine.helpers)

@@ -7,7 +7,7 @@ module ShoppingCart
     load_and_authorize_resource
 
     def index
-      @this_user = current_user
+      current_user
     end
 
     def update
@@ -20,7 +20,7 @@ module ShoppingCart
     def change_email
       current_user.skip_password = true
       current_user.update(params_email)
-      render :index, this_user: @current_user.errors
+      render :index, this_user: current_user.errors
     end
 
     def change_pwd
